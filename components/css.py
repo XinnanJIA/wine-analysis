@@ -9,6 +9,10 @@ css = f"""
             padding-right: 1.5rem;
             padding-left: 1.5rem;
         }}
+        hr{{
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }}
         div[data-testid='stToolbar']{{
             display: none !important;
         }}
