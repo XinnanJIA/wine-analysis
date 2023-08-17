@@ -16,6 +16,9 @@ css = f"""
         div[data-testid='stToolbar']{{
             display: none !important;
         }}
+        a[class='modebar-btn plotlyjsicon modebar-btn--logo']{{
+            display: none !important;
+        }}
         footer{{
             display: none !important;
         }}

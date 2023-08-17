@@ -1,10 +1,13 @@
 import streamlit as sl
 import plotly.graph_objects as go
+import plotly.express as px
+import duckdb as db
 from millify import millify
 
 
+@sl.cache_data
 def plot_metric(
-    label, value, series, prefix="", suffix="", show_graph=False, color_graph=""
+    label, value, series=None, prefix="", suffix="", show_graph=False, color_graph=""
 ):
     fig = go.Figure()
 
@@ -48,4 +51,70 @@ def plot_metric(
         height=100,
     )
 
+    sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
+def plot_transact_by_day(df):
+    daily_transtn = db.sql(
+        f"""
+        WITH aggregate_transantn AS (
+            SELECT
+                Day_Name AS Day,
+                Day_Number,
+                COUNT(SalesKey) AS Transactions
+            FROM
+                df
+            GROUP BY 
+                Day_Name, 
+                Day_Number
+            ORDER BY Day_Number ASC
+        )
+
+        SELECT * FROM aggregate_transantn
+        """
+    ).df()
+
+    fig = px.line(
+        daily_transtn,
+        x="Day",
+        y="Transactions",
+        markers=True,
+        text="Transactions",
+        title="Total Transactions by Day",
+    )
+    sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
+def plot_sales_by_day(df):
+    daily_sales = db.sql(
+        f"""
+        WITH aggregate_sales AS (
+            SELECT
+                Year,
+                Day_Name AS Day,
+                Day_Number,
+                SUM(SaleAmount) AS Sales
+            FROM
+                df
+            GROUP BY 
+                Year,
+                Day_Name, 
+                Day_Number
+            ORDER BY Day_Number ASC
+        )
+
+        SELECT * FROM aggregate_sales
+        """
+    ).df()
+
+    fig = px.line(
+        daily_sales,
+        x="Day",
+        y="Sales",
+        markers=True,
+        color="Year",
+        title="Total Sales by Day",
+    )
     sl.plotly_chart(fig, use_container_width=True)

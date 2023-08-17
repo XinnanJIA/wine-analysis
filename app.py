@@ -2,7 +2,7 @@ import streamlit as sl
 import pandas as pd
 from streamlit_option_menu import option_menu
 from millify import millify
-from components.plots import plot_metric
+from components.plots import plot_metric, plot_transact_by_day, plot_sales_by_day
 
 # from pathlib import Path
 from components.css import css
@@ -92,6 +92,7 @@ if selected == "Sales":
     gross_sales = filtered_data["SaleAmount"].sum()
     sales = filtered_data["SaleAmount"]
     net_sales = filtered_data["SaleAmount"].sum() - filtered_data["ReturnAmount"].sum()
+    n_sales = filtered_data["SaleAmount"] - filtered_data["ReturnAmount"]
     num_trans = filtered_data["SalesKey"].count()
     actual_trans = filtered_data[filtered_data["ReturnAmount"] == 0]["SalesKey"].count()
 
@@ -112,22 +113,42 @@ if selected == "Sales":
         plot_metric(
             "Net Sales",
             value=net_sales,
-            series=sales,
+            series=n_sales,
             prefix="$",
             show_graph=True,
             color_graph="rgba(0, 104, 201, 0.2)",
         )
-    trans.metric(label="**Total Transactions**", value=millify(num_trans))
-    act_trans.metric(label="**Actual Transactions**", value=millify(actual_trans))
-    "---"
-    with sl.expander("Data Preview"):
-        sl.dataframe(
-            filtered_data,
-            column_config={
-                "Year": sl.column_config.NumberColumn(format="%d"),
-                "SalesKey": sl.column_config.NumberColumn(format="%d"),
-            },
+    # trans.metric(label="**Total Transactions**", value=millify(num_trans))
+    with trans:
+        plot_metric(
+            "Total Transactions",
+            value=num_trans,
+            show_graph=False,
         )
+    # act_trans.metric(label="**Actual Transactions**", value=millify(actual_trans))
+    with act_trans:
+        plot_metric(
+            "Actual Transactions",
+            value=actual_trans,
+            show_graph=False,
+        )
+    "---"
+    # with sl.expander("Data Preview"):
+    #     sl.dataframe(
+    #         filtered_data,
+    #         column_config={
+    #             "Year": sl.column_config.NumberColumn(format="%d"),
+    #             "SalesKey": sl.column_config.NumberColumn(format="%d"),
+    #         },
+    #     )
+
+    # ========= Display Charts ==================
+    top_left, top_right = sl.columns(2)
+    with top_left:
+        plot_transact_by_day(filtered_data)
+
+    with top_right:
+        plot_sales_by_day(filtered_data)
 elif selected == "Profit":
     with sl.sidebar:
         sl.multiselect("Select Year", options=year, default=year)
