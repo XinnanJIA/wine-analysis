@@ -3,6 +3,7 @@ import pandas as pd
 from streamlit_option_menu import option_menu
 from millify import millify
 from components.plots import plot_metric, plot_transact_by_day, plot_sales_by_day
+import duckdb as db
 
 # from pathlib import Path
 from components.css import css
@@ -90,11 +91,56 @@ if selected == "Sales":
 
     # ======= Calculate sales metrics ==========
     gross_sales = filtered_data["SaleAmount"].sum()
-    sales = filtered_data["SaleAmount"]
+    sales = db.sql(
+        f"""
+        SELECT
+            Month,
+            Month_Number,
+            sum(SaleAmount) as sales
+        from filtered_data
+        Group by Month, Month_Number
+        Order by Month_Number
+        """
+    ).df()
+
     net_sales = filtered_data["SaleAmount"].sum() - filtered_data["ReturnAmount"].sum()
-    n_sales = filtered_data["SaleAmount"] - filtered_data["ReturnAmount"]
+    n_sales = db.sql(
+        f"""
+        SELECT
+            Month,
+            Month_Number,
+            sum((SaleAmount - ReturnAmount)) as sales
+        from filtered_data
+        Group by Month, Month_Number
+        Order by Month_Number
+        """
+    ).df()
+
     num_trans = filtered_data["SalesKey"].count()
+    n_trans = db.sql(
+        f"""
+        SELECT
+            Month,
+            Month_Number,
+            count(SalesKey) as transactions
+        from filtered_data
+        Group by Month, Month_Number
+        Order by Month_Number
+        """
+    ).df()
     actual_trans = filtered_data[filtered_data["ReturnAmount"] == 0]["SalesKey"].count()
+    a_trans = db.sql(
+        f"""
+        SELECT
+            Month,
+            Month_Number,
+            count(SalesKey) as transactions
+        from filtered_data
+        where ReturnAmount = 0
+        Group by Month, Month_Number
+        Order by Month_Number
+        """
+    ).df()
 
     # ======= Display Snapshots of sales =========
     gsales, nsales, trans, act_trans = sl.columns(4)
@@ -103,7 +149,8 @@ if selected == "Sales":
         plot_metric(
             "Gross Sales",
             value=gross_sales,
-            series=sales,
+            x=sales.Month,
+            y=sales.sales,
             prefix="$",
             show_graph=True,
             color_graph="rgba(0, 104, 201, 0.2)",
@@ -113,8 +160,10 @@ if selected == "Sales":
         plot_metric(
             "Net Sales",
             value=net_sales,
-            series=n_sales,
+            x=n_sales.Month,
+            y=n_sales.sales,
             prefix="$",
+            show_bar=True,
             show_graph=True,
             color_graph="rgba(0, 104, 201, 0.2)",
         )
@@ -123,14 +172,22 @@ if selected == "Sales":
         plot_metric(
             "Total Transactions",
             value=num_trans,
-            show_graph=False,
+            x=n_trans.Month,
+            y=n_trans.transactions,
+            show_bar=False,
+            show_graph=True,
+            color_graph="rgba(0, 104, 201, 0.2)",
         )
     # act_trans.metric(label="**Actual Transactions**", value=millify(actual_trans))
     with act_trans:
         plot_metric(
             "Actual Transactions",
             value=actual_trans,
-            show_graph=False,
+            x=a_trans.Month,
+            y=a_trans.transactions,
+            show_bar=True,
+            show_graph=True,
+            color_graph="rgba(0, 104, 201, 0.2)",
         )
     "---"
     # with sl.expander("Data Preview"):
@@ -141,7 +198,7 @@ if selected == "Sales":
     #             "SalesKey": sl.column_config.NumberColumn(format="%d"),
     #         },
     #     )
-
+    # sl.write(sales)
     # ========= Display Charts ==================
     top_left, top_right = sl.columns(2)
     with top_left:

@@ -7,7 +7,15 @@ from millify import millify
 
 @sl.cache_data
 def plot_metric(
-    label, value, series=None, prefix="", suffix="", show_graph=False, color_graph=""
+    label,
+    value,
+    x=None,
+    y=None,
+    prefix="",
+    suffix="",
+    show_bar=False,
+    show_graph=False,
+    color_graph="",
 ):
     fig = go.Figure()
 
@@ -29,17 +37,26 @@ def plot_metric(
     )
 
     if show_graph:
-        fig.add_trace(
-            go.Scatter(
-                y=series,
-                hoverinfo="skip",
-                fill="tozeroy",
-                fillcolor=color_graph,
-                line={
-                    "color": color_graph,
-                },
+        if show_bar:
+            fig.add_trace(
+                go.Bar(
+                    x=x,
+                    y=y,
+                )
             )
-        )
+        else:
+            fig.add_trace(
+                go.Scatter(
+                    x=x,
+                    y=y,
+                    hoverinfo="skip",
+                    fill="tozeroy",
+                    fillcolor=color_graph,
+                    line={
+                        "color": color_graph,
+                    },
+                )
+            )
 
     fig.update_xaxes(visible=False, fixedrange=True)
     fig.update_yaxes(visible=False, fixedrange=True)
@@ -83,6 +100,16 @@ def plot_transact_by_day(df):
         text="Transactions",
         title="Total Transactions by Day",
     )
+    fig.update_xaxes(visible=True, title="", fixedrange=True)
+    fig.update_yaxes(visible=True, title="", fixedrange=True)
+    fig.update_layout(
+        # paper_bgcolor="lightgrey",
+        # margin=dict(t=30, b=0),
+        # showlegend=False,
+        # plot_bgcolor="black",
+        height=350,
+    )
+
     sl.plotly_chart(fig, use_container_width=True)
 
 
@@ -117,4 +144,14 @@ def plot_sales_by_day(df):
         color="Year",
         title="Total Sales by Day",
     )
+    fig.update_xaxes(visible=True, title="", fixedrange=True)
+    fig.update_yaxes(visible=True, title="", fixedrange=True)
+    fig.update_layout(
+        # paper_bgcolor="lightgrey",
+        margin=dict(t=0, b=0),
+        # showlegend=False,
+        # plot_bgcolor="black",
+        height=350,
+    )
+
     sl.plotly_chart(fig, use_container_width=True)
