@@ -25,6 +25,12 @@ css = f"""
         div[data-testid='block-container']{{
             padding-top: 0rem;
         }}
+        div[data-testid='stVerticalBlock']{{
+            gap: 0rem;
+        }}
+        # g[class='legend']{{
+        #     display: none !important;
+        # }}
         header{{
             display: none !important;
         }}
