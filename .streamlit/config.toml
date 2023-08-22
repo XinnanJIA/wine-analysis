@@ -3,5 +3,11 @@ runOnSave = true
 
 maxMessageSize = 4500
 
+[theme]
+backgroundColor="#121212"
 
+secondaryBackgroundColor="#232323"
 
+textColor="#e6e7e5"
+
+primaryColor="#0560b4"

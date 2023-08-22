@@ -38,12 +38,12 @@ def plot_gsales_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 28,
-                    "font.color": "white",
+                    "font.size": 30,
+                    "font.color": "#e6e7e5",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "white"},
+                    "font": {"size": 24, "color": "#e6e7e5"},
                 },
             )
         )
@@ -73,10 +73,12 @@ def plot_gsales_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
+            # paper_bgcolor="red",
             margin=dict(t=30, b=0),
             showlegend=False,
-            # plot_bgcolor="black",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            # width=50,
             height=100,
         )
 
@@ -116,12 +118,12 @@ def plot_nsales_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 28,
-                    "font.color": "white",
+                    "font.size": 30,
+                    "font.color": "#1f2121",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "white"},
+                    "font": {"size": 24, "color": "#1f2121"},
                 },
             )
         )
@@ -154,7 +156,8 @@ def plot_nsales_metric(
             # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
-            # plot_bgcolor="black",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             height=100,
         )
 
@@ -194,12 +197,12 @@ def plot_trans_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 28,
-                    "font.color": "white",
+                    "font.size": 30,
+                    "font.color": "#1f2121",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "white"},
+                    "font": {"size": 24, "color": "#1f2121"},
                 },
             )
         )
@@ -232,7 +235,8 @@ def plot_trans_metric(
             # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
-            # plot_bgcolor="black",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             height=100,
         )
 
@@ -273,12 +277,12 @@ def plot_actual_trans_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 28,
-                    "font.color": "white",
+                    "font.size": 30,
+                    "font.color": "#1f2121",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "white"},
+                    "font": {"size": 24, "color": "#1f2121"},
                 },
             )
         )
@@ -311,7 +315,8 @@ def plot_actual_trans_metric(
             # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
-            # plot_bgcolor="black",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             height=100,
         )
 
@@ -419,8 +424,9 @@ def plot_transact_by_day(df):
         # paper_bgcolor="lightgrey",
         # margin=dict(b=0),
         # showlegend=False,
-        # plot_bgcolor="black",
-        height=300,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=250,
     )
 
     sl.plotly_chart(fig, use_container_width=True)
@@ -462,9 +468,11 @@ def plot_sales_by_day(df):
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(b=0),
-        showlegend=False,
-        # plot_bgcolor="black",
-        height=300,
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.7, x=1),
+        # showlegend=False,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=250,
     )
 
     sl.plotly_chart(fig, use_container_width=True)
@@ -506,9 +514,11 @@ def plot_sales_by_month(df):
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(t=0, b=0),
-        showlegend=False,
-        # plot_bgcolor="black",
-        height=300,
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.7, x=1),
+        # showlegend=False,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=250,
     )
 
     sl.plotly_chart(fig, use_container_width=True)
@@ -550,9 +560,11 @@ def plot_sales_by_category(df):
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(t=0, b=0),
-        showlegend=False,
-        # plot_bgcolor="black",
-        # width=200,
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.55, x=1),
+        # hovermode="x unified",
+        # showlegend=False,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
         height=300,
     )
 
@@ -630,7 +642,8 @@ def plot_profit_metric(
             # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
-            # plot_bgcolor="black",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             height=100,
         )
 
@@ -708,7 +721,8 @@ def plot_profitmargin_metric(
             # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
-            # plot_bgcolor="black",
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
             height=100,
         )
 
@@ -741,18 +755,20 @@ def plot_profit_by_product(df):
         x="product",
         y="profit",
         orientation="v",
+        # color="profit",
         title="Top 10 Product  by Profit",
     )
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
+        # marker_color="#03dac6",
         # margin=dict(t=0, b=0),
         # showlegend=False,
-        # plot_bgcolor="black",
-        # width=200,
-        height=700,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=275,
     )
+    fig.update_traces(marker_color="#03dac6")
 
     sl.plotly_chart(fig, use_container_width=True)
 
@@ -786,16 +802,20 @@ def plot_profit_by_category(df):
     )
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
+    fig.update_traces(marker_color="#03dac6")
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(t=0, b=0),
         # showlegend=False,
-        # plot_bgcolor="black",
-        # width=200,
-        height=550
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=280,
     )
 
     sl.plotly_chart(fig, use_container_width=True)
+
+
+from plotly.subplots import make_subplots
 
 
 @sl.cache_data
@@ -807,7 +827,8 @@ def plot_profit_by_month(df):
             SELECT
                 Month,
                 Month_Number,
-                SUM(ProfitAmount) AS profit
+                SUM(ProfitAmount) AS profit,
+                ((sum(ProfitAmount)/sum(SaleAmount)) * 100) as profitmargin
             FROM
                 df
             GROUP BY 
@@ -819,22 +840,44 @@ def plot_profit_by_month(df):
         """
     ).df()
 
-    fig = px.bar(
-        profit,
-        x="profit",
-        y="Month",
-        orientation="h",
-        title="Profit by Month",
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    fig.add_trace(
+        go.Bar(
+            y=profit.profit,
+            x=profit.Month,
+            # orientation="h",
+            name="Profit",
+            marker=dict(color="#03dac6"),
+        ),
+        secondary_y=False,
     )
-    fig.update_xaxes(visible=True, title="", fixedrange=True)
-    fig.update_yaxes(visible=True, title="", fixedrange=True)
+
+    fig.add_trace(
+        go.Scatter(
+            y=profit.profitmargin,
+            x=profit.Month,
+            # orientation="h",
+            name="Profit Margin",
+            mode="lines+markers",
+            marker=dict(color="#0560b4"),
+        ),
+        secondary_y=True,
+    )
+
+    # fig.update_xaxes(visible=True, title="", fixedrange=True)
+    # fig.update_yaxes(visible=True, title="", fixedrange=True)
+    # fig.update_traces(marker_color="#03dac6", line_color="#bb86fc")
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(t=0, b=0),
-        # showlegend=False,
-        # plot_bgcolor="black",
-        # width=200,
-        height=680,
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.12, x=0.9),
+        yaxis=dict(showgrid=False),
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        hovermode="x unified",
+        title="Profit and Margin by Month",
+        height=420,
     )
 
     sl.plotly_chart(fig, use_container_width=True)

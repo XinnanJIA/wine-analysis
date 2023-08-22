@@ -17,6 +17,8 @@ from components.plots import (
     plot_profit_by_category,
     plot_profit_by_month,
 )
+from components.extra import add_logo
+from PIL import Image
 
 # ========= Page setup ======================
 sl.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout="wide")
@@ -27,13 +29,26 @@ import duckdb as db
 # from pathlib import Path
 from components.css import css
 
+
+import os
+
 # go to webfx.com/tools/emoji-cheat-sheet/ for emoji's
+
+for file_path in os.listdir():
+    if file_path.endswith(".jpg"):
+        img_path = file_path
+        break
+
+logo = Image.open(img_path)
+
+add_logo(logo)
 
 # ========= CSS ===============
 sl.markdown(css, unsafe_allow_html=True)
 
 sl.header("Consoto Sale's Dashboard :bar_chart:")
 with sl.sidebar:
+    sl.image(logo)
     selected = option_menu(
         menu_title=None,
         options=["Revenue", "Profit", "Refunds"],
@@ -52,10 +67,8 @@ if selected == "Revenue":
         continent = data["ContinentName"].unique()
         continent.sort()
 
-        contin = sl.multiselect(
-            "Select Continent", options=continent, default=continent
-        )
-        data = data[data["ContinentName"].isin(contin)]
+        contin = sl.selectbox("Select Continent", options=continent)
+        # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
         years = sl.multiselect("Select Year", options=year, default=year)
         # promo = sl.multiselect("Select Promo", options=promotion, default=promotion[1])
@@ -108,18 +121,18 @@ if selected == "Revenue":
     #     )
     # sl.write(px.line)
     # ========= Display Charts ==================
-    top_left, top_right = sl.columns(2)
+    top_left, center, top_right = sl.columns(3)
     with top_left:
         plot_transact_by_day(filtered_data)
 
-    with top_right:
+    with center:
         plot_sales_by_day(filtered_data)
 
-    bottom_left, bottom_right = sl.columns(2)
-    with bottom_left:
+    # bottom_left, bottom_right = sl.columns(2)
+    with top_right:
         plot_sales_by_month(filtered_data)
-    with bottom_right:
-        plot_sales_by_category(filtered_data)
+    # with bottom_right:
+    plot_sales_by_category(filtered_data)
 elif selected == "Profit":
     with sl.sidebar:
         year = data["Year"].unique()
@@ -127,10 +140,8 @@ elif selected == "Profit":
         continent = data["ContinentName"].unique()
         continent.sort()
 
-        contin = sl.multiselect(
-            "Select Continent", options=continent, default=continent
-        )
-        data = data[data["ContinentName"].isin(contin)]
+        contin = sl.selectbox("Select Continent", options=continent)
+        # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
         years = sl.multiselect("Select Year", options=year, default=year)
         # promo = sl.multiselect("Select Promo", options=promotion, default=promotion[1])
@@ -154,16 +165,12 @@ elif selected == "Profit":
                 "Profit Margin", data=filtered_data, show_graph=False, suffix="%"
             )
         "---"
-        bl, br = sl.columns(2)
-        with bl:
-            plot_profit_by_category(filtered_data)
 
-        with br:
-            plot_profit_by_product(filtered_data)
-
-    with right_col:
         plot_profit_by_month(filtered_data)
+    with right_col:
+        plot_profit_by_category(filtered_data)
+        plot_profit_by_product(filtered_data)
 elif selected == "Refunds":
-    with sl.sidebar:
-        sl.multiselect("Select Year", options=year, default=year)
-    sl.write("Refunds")
+    # with sl.sidebar:
+    # sl.multiselect("Select Year", options=year, default=year)
+    sl.image(logo)
