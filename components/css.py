@@ -51,7 +51,7 @@ css = f"""
             padding: 3px;
             border-radius: 1rem;
             # border-left: 0.1rem solid #9AD8E1 !important;
-            box-shadow: 0.1rem 0.1rem 0.2rem 0 #a8a9a9 !important;
+            box-shadow: 0.1rem 0.1rem 0.2rem 0 rgba(135,135,135,0.7) !important;
         }}
         # g[class='legend']{{
         #     display: none !important;

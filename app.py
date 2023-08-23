@@ -16,8 +16,14 @@ from components.plots import (
     plot_profit_by_product,
     plot_profit_by_category,
     plot_profit_by_month,
+    plot_sales_by_channel,
+    plot_refund_metric,
+    plot_refundmargin_metric,
+    plot_returnq_by_category,
+    plot_return_amount_by_category,
+    plot_return_by_month,
 )
-from components.extra import add_logo
+from streamlit_extras.app_logo import add_logo
 from PIL import Image
 
 # ========= Page setup ======================
@@ -29,28 +35,20 @@ import duckdb as db
 # from pathlib import Path
 from components.css import css
 
-
-import os
-
 # go to webfx.com/tools/emoji-cheat-sheet/ for emoji's
 
-for file_path in os.listdir():
-    if file_path.endswith(".jpg"):
-        img_path = file_path
-        break
+url = "https://github.com/Ekediee/consoto-dashboard/blob/main/consoto.jpg"
 
-logo = Image.open(img_path)
-
-add_logo(logo)
+add_logo(logo_url=url, height=50)
 
 # ========= CSS ===============
 sl.markdown(css, unsafe_allow_html=True)
 
-sl.header("Consoto Sale's Dashboard :bar_chart:")
+sl.header("Consoto Sale's Analysis :bar_chart:")
 with sl.sidebar:
-    sl.image(logo)
+
     selected = option_menu(
-        menu_title=None,
+        menu_title="Dashboard",
         options=["Revenue", "Profit", "Refunds"],
         icons=["receipt-cutoff", "cash-coin", "currency-dollar"],
         default_index=0,
@@ -67,6 +65,7 @@ if selected == "Revenue":
         continent = data["ContinentName"].unique()
         continent.sort()
 
+        sl.header("Apply Filter")
         contin = sl.selectbox("Select Continent", options=continent)
         # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
@@ -111,15 +110,15 @@ if selected == "Revenue":
             color_graph="rgba(0, 104, 201, 0.2)",
         )
     "---"
-    # with sl.expander("Data Preview"):
-    #     sl.dataframe(
-    #         filtered_data,
-    #         column_config={
-    #             "Year": sl.column_config.NumberColumn(format="%d"),
-    #             "SalesKey": sl.column_config.NumberColumn(format="%d"),
-    #         },
-    #     )
-    # sl.write(px.line)
+    with sl.expander("Data Preview"):
+        sl.dataframe(
+            filtered_data,
+            column_config={
+                "Year": sl.column_config.NumberColumn(format="%d"),
+                "SalesKey": sl.column_config.NumberColumn(format="%d"),
+            },
+        )
+    # sl.write(filtered_data.Region.unique())
     # ========= Display Charts ==================
     top_left, center, top_right = sl.columns(3)
     with top_left:
@@ -128,11 +127,14 @@ if selected == "Revenue":
     with center:
         plot_sales_by_day(filtered_data)
 
-    # bottom_left, bottom_right = sl.columns(2)
     with top_right:
         plot_sales_by_month(filtered_data)
-    # with bottom_right:
-    plot_sales_by_category(filtered_data)
+
+    bottom_left, bottom_right = sl.columns([2, 1])
+    with bottom_left:
+        plot_sales_by_category(filtered_data)
+    with bottom_right:
+        plot_sales_by_channel(filtered_data)
 elif selected == "Profit":
     with sl.sidebar:
         year = data["Year"].unique()
@@ -140,6 +142,7 @@ elif selected == "Profit":
         continent = data["ContinentName"].unique()
         continent.sort()
 
+        sl.header("Apply Filter")
         contin = sl.selectbox("Select Continent", options=continent)
         # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
@@ -158,7 +161,7 @@ elif selected == "Profit":
                 data=filtered_data,
                 show_bar=False,
                 prefix="$",
-                color_graph="lightseagreen",
+                color_graph="rgba(3,218,198,0.1)",
             )
         with pmargin:
             plot_profitmargin_metric(
@@ -171,6 +174,42 @@ elif selected == "Profit":
         plot_profit_by_category(filtered_data)
         plot_profit_by_product(filtered_data)
 elif selected == "Refunds":
-    # with sl.sidebar:
-    # sl.multiselect("Select Year", options=year, default=year)
-    sl.image(logo)
+    with sl.sidebar:
+        year = data["Year"].unique()
+        year.sort()
+        continent = data["ContinentName"].unique()
+        continent.sort()
+
+        sl.header("Apply Filter")
+        contin = sl.selectbox("Select Continent", options=continent)
+        # data = data[data["ContinentName"].isin(contin)]
+        # promotion = data["PromotionName"].unique()
+        years = sl.multiselect("Select Year", options=year, default=year)
+        # promo = sl.multiselect("Select Promo", options=promotion, default=promotion[1])
+
+    # filt_data = data.query("ContinentName == @contin")
+    filtered_data = data.query("ContinentName == @contin & Year == @years")
+
+    metric_left, metric_right = sl.columns([2, 1])
+    with metric_left:
+        trefund, refundm = sl.columns(2)
+        with trefund:
+            plot_refund_metric(
+                "Amount Refunded",
+                prefix="$",
+                data=filtered_data,
+                show_bar=False,
+                color_graph="rgba(172,23,23,0.2)",
+            )
+        with refundm:
+            plot_refundmargin_metric(
+                "Refund Margin",
+                suffix="%",
+                data=filtered_data,
+                color_graph="rgba(172,23,23,0.2)",
+            )
+        "---"
+        plot_return_by_month(filtered_data)
+    with metric_right:
+        plot_returnq_by_category(filtered_data)
+        plot_return_amount_by_category(filtered_data)

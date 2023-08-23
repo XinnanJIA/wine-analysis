@@ -38,12 +38,12 @@ def plot_gsales_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 30,
+                    "font.size": 40,
                     "font.color": "#e6e7e5",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "#e6e7e5"},
+                    "font": {"size": 18, "color": "#e6e7e5"},
                 },
             )
         )
@@ -54,6 +54,7 @@ def plot_gsales_metric(
                     go.Bar(
                         x=sales.Month,
                         y=sales.sales,
+                        marker=dict(color="rgba(0,104,201,0.3)"),
                     )
                 )
             else:
@@ -118,12 +119,12 @@ def plot_nsales_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 30,
-                    "font.color": "#1f2121",
+                    "font.size": 40,
+                    "font.color": "#e6e7e5",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "#1f2121"},
+                    "font": {"size": 18, "color": "#e6e7e5"},
                 },
             )
         )
@@ -134,6 +135,7 @@ def plot_nsales_metric(
                     go.Bar(
                         x=n_sales.Month,
                         y=n_sales.sales,
+                        marker=dict(color="rgba(0,104,201,0.3)"),
                     )
                 )
             else:
@@ -197,12 +199,12 @@ def plot_trans_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 30,
-                    "font.color": "#1f2121",
+                    "font.size": 40,
+                    "font.color": "#e6e7e5",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "#1f2121"},
+                    "font": {"size": 18, "color": "#e6e7e5"},
                 },
             )
         )
@@ -277,12 +279,12 @@ def plot_actual_trans_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 30,
-                    "font.color": "#1f2121",
+                    "font.size": 40,
+                    "font.color": "#e6e7e5",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "#1f2121"},
+                    "font": {"size": 18, "color": "#e6e7e5"},
                 },
             )
         )
@@ -525,6 +527,49 @@ def plot_sales_by_month(df):
 
 
 @sl.cache_data
+def plot_sales_by_channel(df):
+    channel_sales = db.sql(
+        f"""
+        WITH aggregate_sales AS (
+            SELECT
+                ChannelName,
+                SUM(SaleAmount) AS Sales
+            FROM
+                df
+            GROUP BY 
+                ChannelName
+        )
+
+        SELECT * FROM aggregate_sales
+        """
+    ).df()
+
+    fig = px.pie(
+        channel_sales,
+        names="ChannelName",
+        values="Sales",
+        # markers=True,
+        hole=0.4,
+        # template="seaborn",
+    )
+    # fig.update_xaxes(visible=True, title="", fixedrange=True)
+    fig.update_traces(textinfo="value + percent")
+    fig.update_layout(
+        # paper_bgcolor="lightgrey",
+        # margin=dict(t=0, b=0),
+        legend=dict(orientation="v", yanchor="top", xanchor="right", y=1.7, x=1),
+        # showlegend=False,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        height=300,
+        title_text="Total Revenue by Channel",
+        title_x=0.1,
+    )
+
+    sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
 def plot_sales_by_category(df):
 
     sales = db.sql(
@@ -560,7 +605,7 @@ def plot_sales_by_category(df):
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(t=0, b=0),
-        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.55, x=1),
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.49, x=1),
         # hovermode="x unified",
         # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
@@ -604,12 +649,12 @@ def plot_profit_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 28,
+                    "font.size": 40,
                     "font.color": "white",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "white"},
+                    "font": {"size": 18, "color": "white"},
                 },
             )
         )
@@ -683,12 +728,12 @@ def plot_profitmargin_metric(
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
-                    "font.size": 28,
+                    "font.size": 40,
                     "font.color": "white",
                 },
                 title={
                     "text": label,
-                    "font": {"size": 24, "color": "white"},
+                    "font": {"size": 18, "color": "white"},
                 },
             )
         )
@@ -768,7 +813,7 @@ def plot_profit_by_product(df):
         paper_bgcolor="rgba(0,0,0,0)",
         height=275,
     )
-    fig.update_traces(marker_color="#03dac6")
+    fig.update_traces(marker_color="rgba(3,218,198,0.6)")
 
     sl.plotly_chart(fig, use_container_width=True)
 
@@ -802,11 +847,8 @@ def plot_profit_by_category(df):
     )
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
-    fig.update_traces(marker_color="#03dac6")
+    fig.update_traces(marker_color="rgba(3,218,198,0.6)")
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
-        # margin=dict(t=0, b=0),
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=280,
@@ -848,7 +890,7 @@ def plot_profit_by_month(df):
             x=profit.Month,
             # orientation="h",
             name="Profit",
-            marker=dict(color="#03dac6"),
+            marker=dict(color="rgba(3,218,198,0.6)"),
         ),
         secondary_y=False,
     )
@@ -860,7 +902,7 @@ def plot_profit_by_month(df):
             # orientation="h",
             name="Profit Margin",
             mode="lines+markers",
-            marker=dict(color="#0560b4"),
+            marker=dict(color="rgba(7,29,171,0.7)"),
         ),
         secondary_y=True,
     )
@@ -877,6 +919,319 @@ def plot_profit_by_month(df):
         paper_bgcolor="rgba(0,0,0,0)",
         hovermode="x unified",
         title="Profit and Margin by Month",
+        height=420,
+    )
+
+    sl.plotly_chart(fig, use_container_width=True)
+
+
+# ============= Evaluate Refunds ====================
+@sl.cache_data
+def plot_refund_metric(
+    label=None,
+    prefix="",
+    suffix="",
+    data=None,
+    show_graph=True,
+    show_bar=True,
+    color_graph="",
+):
+    if data is not None:
+        treturn = data["ReturnAmount"].sum()
+        returns = db.sql(
+            f"""
+            SELECT
+                Month,
+                Month_Number,
+                sum(ReturnAmount) as returns
+            from data
+            Group by Month, Month_Number
+            Order by Month_Number
+            """
+        ).df()
+
+        fig = go.Figure()
+
+        fig.add_trace(
+            go.Indicator(
+                value=treturn,
+                gauge={"axis": {"visible": False}},
+                number={
+                    "prefix": prefix,
+                    "suffix": suffix,
+                    "font.size": 40,
+                    "font.color": "white",
+                },
+                title={
+                    "text": label,
+                    "font": {"size": 18, "color": "white"},
+                },
+            )
+        )
+
+        if show_graph:
+            if show_bar:
+                fig.add_trace(
+                    go.Bar(
+                        x=returns.Month,
+                        y=returns.returns,
+                    )
+                )
+            else:
+                fig.add_trace(
+                    go.Scatter(
+                        x=returns.Month,
+                        y=returns.returns,
+                        hoverinfo="skip",
+                        fill="tozeroy",
+                        fillcolor=color_graph,
+                        line={
+                            "color": color_graph,
+                        },
+                    )
+                )
+
+        fig.update_xaxes(visible=False, fixedrange=True)
+        fig.update_yaxes(visible=False, fixedrange=True)
+        fig.update_layout(
+            # paper_bgcolor="lightgrey",
+            margin=dict(t=30, b=0),
+            showlegend=False,
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            height=100,
+        )
+
+        sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
+def plot_refundmargin_metric(
+    label=None,
+    prefix="",
+    suffix="",
+    data=None,
+    show_graph=True,
+    show_bar=True,
+    color_graph="",
+):
+    if data is not None:
+        refundm = (data["ReturnAmount"].sum()) / (data["SaleAmount"].sum()) * 100
+        mrefunds = db.sql(
+            f"""
+            SELECT
+                Month,
+                Month_Number,
+                ((sum(ReturnAmount)/sum(SaleAmount)) * 100) as refundmargin
+            from data
+            Group by Month, Month_Number
+            Order by Month_Number
+            """
+        ).df()
+
+        fig = go.Figure()
+
+        fig.add_trace(
+            go.Indicator(
+                value=refundm,
+                gauge={"axis": {"visible": False}},
+                number={
+                    "prefix": prefix,
+                    "suffix": suffix,
+                    "font.size": 40,
+                    "font.color": "white",
+                },
+                title={
+                    "text": label,
+                    "font": {"size": 18, "color": "white"},
+                },
+            )
+        )
+
+        if show_graph:
+            if show_bar:
+                fig.add_trace(
+                    go.Bar(
+                        x=mrefunds.Month,
+                        y=mrefunds.refundmargin,
+                        marker=dict(color=color_graph),
+                    )
+                )
+            else:
+                fig.add_trace(
+                    go.Scatter(
+                        x=mrefunds.Month,
+                        y=mrefunds.refundmargin,
+                        hoverinfo="skip",
+                        fill="tozeroy",
+                        fillcolor=color_graph,
+                        line={
+                            "color": color_graph,
+                        },
+                    )
+                )
+
+        fig.update_xaxes(visible=False, fixedrange=True)
+        fig.update_yaxes(visible=False, fixedrange=True)
+        fig.update_layout(
+            # paper_bgcolor="lightgrey",
+            margin=dict(t=30, b=0),
+            showlegend=False,
+            plot_bgcolor="rgba(0,0,0,0)",
+            paper_bgcolor="rgba(0,0,0,0)",
+            height=100,
+        )
+
+        sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
+def plot_returnq_by_category(df):
+
+    category = db.sql(
+        f"""
+        WITH aggregate_profit AS (
+            SELECT
+                ProductCategoryName as category,
+                count(ReturnAmount) as returnquantity
+            FROM
+                df
+            GROUP BY 
+                ProductCategoryName
+            ORDER BY count(ReturnAmount) desc
+        )
+
+        SELECT * FROM aggregate_profit
+        """
+    ).df()
+
+    fig = px.bar(
+        category,
+        x="category",
+        y="returnquantity",
+        orientation="v",
+        text_auto=True,
+        title="Product Category by Return Quantity",
+    )
+    fig.update_xaxes(visible=True, title="", fixedrange=True)
+    fig.update_yaxes(visible=True, title="", fixedrange=False, range=[0, 5000])
+    fig.update_traces(marker_color="rgba(172,23,23,0.6)", textposition="outside")
+    fig.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        # yaxis=dict(text=True),
+        height=280,
+    )
+
+    sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
+def plot_return_amount_by_category(df):
+
+    category = db.sql(
+        f"""
+        WITH aggregate_profit AS (
+            SELECT
+                ProductCategoryName as category,
+                sum(ReturnAmount) as returnamount,
+                ((sum(ReturnAmount)/sum(SaleAmount)) * 100) as refundmargin
+            FROM
+                df
+            GROUP BY 
+                ProductCategoryName
+            ORDER BY sum(ReturnAmount) desc
+        )
+
+        SELECT * FROM aggregate_profit
+        """
+    ).df()
+
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    fig.add_trace(
+        go.Bar(
+            x=category.category,
+            y=category.returnamount,
+            # orientation="v",
+            name="Total Return",
+            # title="Product Category by Return Amount",
+            marker=dict(color="rgba(172,23,23,0.6)"),
+        ),
+        secondary_y=False,
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=category.category,
+            y=category.refundmargin,
+            # orientation="v",
+            name="Return Ratio",
+            marker=dict(color="rgb(159,97,10)"),
+        ),
+        secondary_y=True,
+    )
+
+    fig.update_xaxes(visible=True, title="", fixedrange=True)
+    fig.update_yaxes(visible=True, title="", fixedrange=True)
+    # fig.update_traces(marker_color="rgba(172,23,23,0.6)")
+    fig.update_layout(
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.6, x=1.4),
+        yaxis=dict(showgrid=False),
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        title="Product Category by Return Amount & Ratio",
+        height=280,
+    )
+
+    sl.plotly_chart(fig, use_container_width=True)
+
+
+@sl.cache_data
+def plot_return_by_month(df):
+
+    refund = db.sql(
+        f"""
+        WITH aggregate_return AS (
+            SELECT
+                Year,
+                Month,
+                Month_Number,
+                sum(ReturnAmount) as returnamount
+            FROM
+                df
+            GROUP BY 
+                Year,Month, Month_Number
+            ORDER BY Month_Number asc
+        )
+
+        SELECT * FROM aggregate_return
+        """
+    ).df()
+
+    fig = px.line(
+        refund,
+        y="returnamount",
+        x="Month",
+        markers=True,
+        color="Year",
+        color_discrete_map={
+            2014: "rgb(159,97,10)",
+            2015: "rgb(191,98,98)",
+            2016: "rgb(159,10,10)",
+        },
+    )
+
+    fig.update_xaxes(visible=True, title="", fixedrange=True)
+    fig.update_yaxes(visible=True, title="", fixedrange=True)
+    # fig.update_traces(marker_color="#03dac6", line_color="#bb86fc")
+    fig.update_layout(
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.2, x=1),
+        # margin=dict(t=0, b=0),
+        yaxis=dict(showgrid=False),
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
+        title="Return Amount by Month",
         height=420,
     )
 

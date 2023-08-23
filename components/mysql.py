@@ -14,7 +14,7 @@ contosodb = cn.connect(
 # ========= Fetch data from the database ===============
 @sl.cache_data
 def fetch_data():
-    data = pd.read_sql_query("select * from fsale limit 50000", contosodb)
+    data = pd.read_sql_query("select * from factsale limit 50000", contosodb)
     # data.to_csv(f"{cwd}\\query.csv", index=False)
 
     return data
