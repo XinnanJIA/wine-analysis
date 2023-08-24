@@ -2,7 +2,6 @@ import streamlit as sl
 import plotly.graph_objects as go
 import plotly.express as px
 import duckdb as db
-from millify import millify
 
 
 @sl.cache_data
@@ -160,6 +159,7 @@ def plot_nsales_metric(
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
+            # width=330,
             height=100,
         )
 
@@ -1114,7 +1114,7 @@ def plot_returnq_by_category(df):
         title="Product Category by Return Quantity",
     )
     fig.update_xaxes(visible=True, title="", fixedrange=True)
-    fig.update_yaxes(visible=True, title="", fixedrange=False, range=[0, 5000])
+    fig.update_yaxes(visible=True, title="", fixedrange=False)
     fig.update_traces(marker_color="rgba(172,23,23,0.6)", textposition="outside")
     fig.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
@@ -1176,7 +1176,7 @@ def plot_return_amount_by_category(df):
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     # fig.update_traces(marker_color="rgba(172,23,23,0.6)")
     fig.update_layout(
-        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.6, x=1.4),
+        legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.6, x=1),
         yaxis=dict(showgrid=False),
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",

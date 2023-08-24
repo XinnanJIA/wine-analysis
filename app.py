@@ -29,8 +29,7 @@ from PIL import Image
 # ========= Page setup ======================
 sl.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout="wide")
 
-from components.mysql import data
-import duckdb as db
+from components.db import data
 
 # from pathlib import Path
 from components.css import css
@@ -110,14 +109,14 @@ if selected == "Revenue":
             color_graph="rgba(0, 104, 201, 0.2)",
         )
     "---"
-    with sl.expander("Data Preview"):
-        sl.dataframe(
-            filtered_data,
-            column_config={
-                "Year": sl.column_config.NumberColumn(format="%d"),
-                "SalesKey": sl.column_config.NumberColumn(format="%d"),
-            },
-        )
+    # with sl.expander("Data Preview"):
+    #     sl.dataframe(
+    #         filtered_data,
+    #         column_config={
+    #             "Year": sl.column_config.NumberColumn(format="%d"),
+    #             "SalesKey": sl.column_config.NumberColumn(format="%d"),
+    #         },
+    #     )
     # sl.write(filtered_data.Region.unique())
     # ========= Display Charts ==================
     top_left, center, top_right = sl.columns(3)
