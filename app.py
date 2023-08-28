@@ -2,7 +2,7 @@ import streamlit as sl
 import pandas as pd
 from streamlit_option_menu import option_menu
 from millify import millify
-from components.plots import (
+from components.metrics import (
     plot_transact_by_day,
     plot_sales_by_day,
     plot_gsales_metric,
@@ -22,9 +22,11 @@ from components.plots import (
     plot_returnq_by_category,
     plot_return_amount_by_category,
     plot_return_by_month,
+    get_reference,
 )
 from streamlit_extras.app_logo import add_logo
 from PIL import Image
+import duckdb as db
 
 # ========= Page setup ======================
 sl.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout="wide")
@@ -77,12 +79,14 @@ if selected == "Revenue":
     # ======= Display Snapshots of sales =========
     gsales, nsales, trans, act_trans = sl.columns(4)
     # gsales.metric(label="**Gross Sales**", value=millify(gross_sales, precision=2))
+
     with gsales:
         plot_gsales_metric(
             label="Gross Revenue",
             data=filtered_data,
             prefix="$",
             color_graph="rgba(0, 104, 201, 0.2)",
+            reference=get_reference(years, contin, data, "SaleAmount"),
         )
     # nsales.metric(label="**Net Sales**", value=millify(net_sales, precision=2))
     with nsales:
@@ -110,14 +114,14 @@ if selected == "Revenue":
         )
     "---"
     # with sl.expander("Data Preview"):
-    #     sl.dataframe(
-    #         filtered_data,
-    #         column_config={
-    #             "Year": sl.column_config.NumberColumn(format="%d"),
-    #             "SalesKey": sl.column_config.NumberColumn(format="%d"),
-    #         },
-    #     )
-    # sl.write(filtered_data.Region.unique())
+    # sl.dataframe(
+    #     filtered_data,
+    #     column_config={
+    #         "Year": sl.column_config.NumberColumn(format="%d"),
+    #         "SalesKey": sl.column_config.NumberColumn(format="%d"),
+    #     },
+    # )
+    # sl.write(refs)
     # ========= Display Charts ==================
     top_left, center, top_right = sl.columns(3)
     with top_left:
@@ -152,6 +156,7 @@ elif selected == "Profit":
     filtered_data = data.query("ContinentName == @contin & Year == @years")
 
     left_col, right_col = sl.columns([2, 1])
+
     with left_col:
         tprofit, pmargin = sl.columns(2)
         with tprofit:
@@ -161,6 +166,7 @@ elif selected == "Profit":
                 show_bar=False,
                 prefix="$",
                 color_graph="rgba(3,218,198,0.1)",
+                reference=get_reference(years, contin, data, "ProfitAmount"),
             )
         with pmargin:
             plot_profitmargin_metric(
@@ -199,6 +205,7 @@ elif selected == "Refunds":
                 data=filtered_data,
                 show_bar=False,
                 color_graph="rgba(172,23,23,0.2)",
+                reference=get_reference(years, contin, data, "ReturnAmount"),
             )
         with refundm:
             plot_refundmargin_metric(

@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import duckdb as db
 
-
+# ============= Evaluate Revenue ====================
 @sl.cache_data
 def plot_gsales_metric(
     label=None,
@@ -13,6 +13,7 @@ def plot_gsales_metric(
     show_graph=True,
     show_bar=True,
     color_graph="",
+    reference=None,
 ):
     if data is not None:
         gross_sales = data["SaleAmount"].sum()
@@ -33,7 +34,6 @@ def plot_gsales_metric(
         fig.add_trace(
             go.Indicator(
                 value=gross_sales,
-                gauge={"axis": {"visible": False}},
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
@@ -73,13 +73,21 @@ def plot_gsales_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="red",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
-            # width=50,
             height=100,
+            template={
+                "data": {
+                    "indicator": [
+                        {
+                            "mode": "number+delta",
+                            "delta": {"reference": reference},
+                        }
+                    ]
+                }
+            },
         )
 
         sl.plotly_chart(fig, use_container_width=True)
@@ -154,12 +162,10 @@ def plot_nsales_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
-            # width=330,
             height=100,
         )
 
@@ -234,7 +240,6 @@ def plot_trans_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
@@ -314,7 +319,6 @@ def plot_actual_trans_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
@@ -381,10 +385,8 @@ def plot_metric(
     fig.update_xaxes(visible=False, fixedrange=True)
     fig.update_yaxes(visible=False, fixedrange=True)
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
         margin=dict(t=30, b=0),
         showlegend=False,
-        # plot_bgcolor="black",
         height=100,
     )
 
@@ -423,9 +425,6 @@ def plot_transact_by_day(df):
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
-        # margin=dict(b=0),
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=250,
@@ -468,10 +467,7 @@ def plot_sales_by_day(df):
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
-        # margin=dict(b=0),
         legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.7, x=1),
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=250,
@@ -514,10 +510,7 @@ def plot_sales_by_month(df):
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
-        # margin=dict(t=0, b=0),
         legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.7, x=1),
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=250,
@@ -548,17 +541,12 @@ def plot_sales_by_channel(df):
         channel_sales,
         names="ChannelName",
         values="Sales",
-        # markers=True,
         hole=0.4,
-        # template="seaborn",
     )
-    # fig.update_xaxes(visible=True, title="", fixedrange=True)
+
     fig.update_traces(textinfo="value + percent")
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
-        # margin=dict(t=0, b=0),
         legend=dict(orientation="v", yanchor="top", xanchor="right", y=1.7, x=1),
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=300,
@@ -603,11 +591,7 @@ def plot_sales_by_category(df):
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     fig.update_layout(
-        # paper_bgcolor="lightgrey",
-        # margin=dict(t=0, b=0),
         legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.49, x=1),
-        # hovermode="x unified",
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=300,
@@ -616,6 +600,7 @@ def plot_sales_by_category(df):
     sl.plotly_chart(fig, use_container_width=True)
 
 
+# ============= Evaluate Profit ====================
 @sl.cache_data
 def plot_profit_metric(
     label=None,
@@ -625,6 +610,7 @@ def plot_profit_metric(
     show_graph=True,
     show_bar=True,
     color_graph="",
+    reference=None,
 ):
     if data is not None:
         tprofit = data["ProfitAmount"].sum()
@@ -645,7 +631,6 @@ def plot_profit_metric(
         fig.add_trace(
             go.Indicator(
                 value=tprofit,
-                gauge={"axis": {"visible": False}},
                 number={
                     "prefix": prefix,
                     "suffix": suffix,
@@ -684,12 +669,21 @@ def plot_profit_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
             height=100,
+            template={
+                "data": {
+                    "indicator": [
+                        {
+                            "mode": "number+delta",
+                            "delta": {"reference": reference},
+                        }
+                    ]
+                }
+            },
         )
 
         sl.plotly_chart(fig, use_container_width=True)
@@ -763,7 +757,6 @@ def plot_profitmargin_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
@@ -800,15 +793,11 @@ def plot_profit_by_product(df):
         x="product",
         y="profit",
         orientation="v",
-        # color="profit",
         title="Top 10 Product  by Profit",
     )
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
     fig.update_layout(
-        # marker_color="#03dac6",
-        # margin=dict(t=0, b=0),
-        # showlegend=False,
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
         height=275,
@@ -888,7 +877,6 @@ def plot_profit_by_month(df):
         go.Bar(
             y=profit.profit,
             x=profit.Month,
-            # orientation="h",
             name="Profit",
             marker=dict(color="rgba(3,218,198,0.6)"),
         ),
@@ -899,7 +887,6 @@ def plot_profit_by_month(df):
         go.Scatter(
             y=profit.profitmargin,
             x=profit.Month,
-            # orientation="h",
             name="Profit Margin",
             mode="lines+markers",
             marker=dict(color="rgba(7,29,171,0.7)"),
@@ -907,9 +894,6 @@ def plot_profit_by_month(df):
         secondary_y=True,
     )
 
-    # fig.update_xaxes(visible=True, title="", fixedrange=True)
-    # fig.update_yaxes(visible=True, title="", fixedrange=True)
-    # fig.update_traces(marker_color="#03dac6", line_color="#bb86fc")
     fig.update_layout(
         # paper_bgcolor="lightgrey",
         # margin=dict(t=0, b=0),
@@ -935,6 +919,7 @@ def plot_refund_metric(
     show_graph=True,
     show_bar=True,
     color_graph="",
+    reference=None,
 ):
     if data is not None:
         treturn = data["ReturnAmount"].sum()
@@ -994,12 +979,21 @@ def plot_refund_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
             paper_bgcolor="rgba(0,0,0,0)",
             height=100,
+            template={
+                "data": {
+                    "indicator": [
+                        {
+                            "mode": "number+delta",
+                            "delta": {"reference": reference},
+                        }
+                    ]
+                }
+            },
         )
 
         sl.plotly_chart(fig, use_container_width=True)
@@ -1074,7 +1068,6 @@ def plot_refundmargin_metric(
         fig.update_xaxes(visible=False, fixedrange=True)
         fig.update_yaxes(visible=False, fixedrange=True)
         fig.update_layout(
-            # paper_bgcolor="lightgrey",
             margin=dict(t=30, b=0),
             showlegend=False,
             plot_bgcolor="rgba(0,0,0,0)",
@@ -1119,7 +1112,6 @@ def plot_returnq_by_category(df):
     fig.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        # yaxis=dict(text=True),
         height=280,
     )
 
@@ -1153,9 +1145,7 @@ def plot_return_amount_by_category(df):
         go.Bar(
             x=category.category,
             y=category.returnamount,
-            # orientation="v",
             name="Total Return",
-            # title="Product Category by Return Amount",
             marker=dict(color="rgba(172,23,23,0.6)"),
         ),
         secondary_y=False,
@@ -1165,7 +1155,6 @@ def plot_return_amount_by_category(df):
         go.Scatter(
             x=category.category,
             y=category.refundmargin,
-            # orientation="v",
             name="Return Ratio",
             marker=dict(color="rgb(159,97,10)"),
         ),
@@ -1174,7 +1163,7 @@ def plot_return_amount_by_category(df):
 
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
-    # fig.update_traces(marker_color="rgba(172,23,23,0.6)")
+
     fig.update_layout(
         legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.6, x=1),
         yaxis=dict(showgrid=False),
@@ -1224,10 +1213,9 @@ def plot_return_by_month(df):
 
     fig.update_xaxes(visible=True, title="", fixedrange=True)
     fig.update_yaxes(visible=True, title="", fixedrange=True)
-    # fig.update_traces(marker_color="#03dac6", line_color="#bb86fc")
+
     fig.update_layout(
         legend=dict(orientation="h", yanchor="top", xanchor="right", y=1.2, x=1),
-        # margin=dict(t=0, b=0),
         yaxis=dict(showgrid=False),
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
@@ -1236,3 +1224,28 @@ def plot_return_by_month(df):
     )
 
     sl.plotly_chart(fig, use_container_width=True)
+
+
+def get_reference(years, contin, data, measure):
+    previous_yr_data = ""
+    if len(years) == 1:
+        current_yr = years[0]
+        if current_yr > data["Year"].min():
+            previous_yr_data = data[data["Year"] == current_yr - 1]
+            previous_yr_data = previous_yr_data[
+                previous_yr_data["ContinentName"] == contin
+            ]
+
+            refs = previous_yr_data[measure].sum()
+            return refs
+        else:
+            previous_yr_data = data[data["Year"] == current_yr]
+            previous_yr_data = previous_yr_data[
+                previous_yr_data["ContinentName"] == contin
+            ]
+
+            refs = previous_yr_data[measure].sum()
+            return refs
+    else:
+        refs = None
+        return refs

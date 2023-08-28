@@ -4,43 +4,22 @@ import streamlit as sl
 # import pandas as pd
 import duckdb as db
 
-# ====================Connect to the Database============
+# ====================Connect to the MySQL Database============
 # contosodb = cn.connect(
 #     host="localhost", user="root", password="ekedie", database="contoso_store"
 # )
 
 # data = pd.read_sql_query("select * from factsale limit 200000", contosodb)
 
-con = db.connect("consoto.db")
-# con.sql(
-#     """
-# create table consoto_store as
-# select * from data
-# """
-# )
-
 # ========= Fetch data from the database ===============
 @sl.cache_data
 def fetch_data():
-    data = con.sql("""select * from consoto_store limit 100000""").df()
-    # data.to_csv(f"{cwd}\\query.csv", index=False)
+    with db.connect("consoto.db") as con:
+        data = con.sql("""select * from consoto_store limit 100000""").df()
+        # data.to_csv(f"{cwd}\\query.csv", index=False)
 
     return data
 
-
-# check if the data json file has been created
-# for f in os.listdir():
-#     if f == "query.csv":
-#         datafile = f
-#         break
-#     else:
-#         datafile = None
-
-# if json file does not exist, fetch data from database
-# if datafile is None:
-#     data = fetch_data()
-# else:
-#     data = read_csv(datafile)
 
 data = fetch_data()
 
