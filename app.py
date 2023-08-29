@@ -1,7 +1,5 @@
 import streamlit as sl
-import pandas as pd
 from streamlit_option_menu import option_menu
-from millify import millify
 from components.metrics import (
     plot_transact_by_day,
     plot_sales_by_day,
@@ -67,7 +65,14 @@ if selected == "Revenue":
         continent.sort()
 
         sl.header("Apply Filter")
-        contin = sl.selectbox("Select Continent", options=continent)
+        checked = sl.checkbox("Check this box to select multiple continents")
+
+        if checked:
+            contin = sl.multiselect(
+                "Select Continent", options=continent, default=continent
+            )
+        else:
+            contin = sl.selectbox("Select Continent", options=continent)
         # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
         years = sl.multiselect("Select Year", options=year, default=year)
@@ -79,6 +84,10 @@ if selected == "Revenue":
     # ======= Display Snapshots of sales =========
     gsales, nsales, trans, act_trans = sl.columns(4)
     # gsales.metric(label="**Gross Sales**", value=millify(gross_sales, precision=2))
+    if checked:
+        reference = None
+    else:
+        reference = get_reference(years, contin, data, "SaleAmount")
 
     with gsales:
         plot_gsales_metric(
@@ -86,7 +95,7 @@ if selected == "Revenue":
             data=filtered_data,
             prefix="$",
             color_graph="rgba(0, 104, 201, 0.2)",
-            reference=get_reference(years, contin, data, "SaleAmount"),
+            reference=reference,
         )
     # nsales.metric(label="**Net Sales**", value=millify(net_sales, precision=2))
     with nsales:
@@ -146,7 +155,14 @@ elif selected == "Profit":
         continent.sort()
 
         sl.header("Apply Filter")
-        contin = sl.selectbox("Select Continent", options=continent)
+        checked = sl.checkbox("Check this box to select multiple continents")
+
+        if checked:
+            contin = sl.multiselect(
+                "Select Continent", options=continent, default=continent
+            )
+        else:
+            contin = sl.selectbox("Select Continent", options=continent)
         # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
         years = sl.multiselect("Select Year", options=year, default=year)
@@ -156,6 +172,10 @@ elif selected == "Profit":
     filtered_data = data.query("ContinentName == @contin & Year == @years")
 
     left_col, right_col = sl.columns([2, 1])
+    if checked:
+        reference = None
+    else:
+        reference = get_reference(years, contin, data, "ProfitAmount")
 
     with left_col:
         tprofit, pmargin = sl.columns(2)
@@ -166,7 +186,7 @@ elif selected == "Profit":
                 show_bar=False,
                 prefix="$",
                 color_graph="rgba(3,218,198,0.1)",
-                reference=get_reference(years, contin, data, "ProfitAmount"),
+                reference=reference,
             )
         with pmargin:
             plot_profitmargin_metric(
@@ -186,7 +206,14 @@ elif selected == "Refunds":
         continent.sort()
 
         sl.header("Apply Filter")
-        contin = sl.selectbox("Select Continent", options=continent)
+        checked = sl.checkbox("Check this box to select multiple continents")
+
+        if checked:
+            contin = sl.multiselect(
+                "Select Continent", options=continent, default=continent
+            )
+        else:
+            contin = sl.selectbox("Select Continent", options=continent)
         # data = data[data["ContinentName"].isin(contin)]
         # promotion = data["PromotionName"].unique()
         years = sl.multiselect("Select Year", options=year, default=year)
@@ -196,6 +223,11 @@ elif selected == "Refunds":
     filtered_data = data.query("ContinentName == @contin & Year == @years")
 
     metric_left, metric_right = sl.columns([2, 1])
+    if checked:
+        reference = None
+    else:
+        reference = get_reference(years, contin, data, "ReturnAmount")
+
     with metric_left:
         trefund, refundm = sl.columns(2)
         with trefund:
@@ -205,7 +237,7 @@ elif selected == "Refunds":
                 data=filtered_data,
                 show_bar=False,
                 color_graph="rgba(172,23,23,0.2)",
-                reference=get_reference(years, contin, data, "ReturnAmount"),
+                reference=reference,
             )
         with refundm:
             plot_refundmargin_metric(
