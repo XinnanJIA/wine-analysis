@@ -1,4 +1,3 @@
-import mysql.connector as cn
 import streamlit as sl
 
 # import pandas as pd
