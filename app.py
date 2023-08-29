@@ -22,7 +22,6 @@ from components.metrics import (
     plot_return_by_month,
     get_reference,
 )
-from streamlit_extras.app_logo import add_logo
 
 # ========= Page setup ======================
 sl.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout="wide")
@@ -33,10 +32,6 @@ from components.db import data
 from components.css import css
 
 # go to webfx.com/tools/emoji-cheat-sheet/ for emoji's
-
-url = "https://github.com/Ekediee/consoto-dashboard/blob/main/consoto.jpg"
-
-add_logo(logo_url=url, height=50)
 
 # ========= CSS ===============
 sl.markdown(css, unsafe_allow_html=True)
