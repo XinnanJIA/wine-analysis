@@ -1,7 +1,6 @@
 duckdb==0.8.1
 Pillow==10.0.0
 plotly==5.16.1
-setuptools==60.8.2
 setuptools==68.0.0
 streamlit==1.24.1
 streamlit_extras==0.3.0
