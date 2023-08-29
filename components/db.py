@@ -14,7 +14,7 @@ import duckdb as db
 @sl.cache_data
 def fetch_data():
     with db.connect("consoto.db") as con:
-        data = con.sql("""select * from consoto_store limit 100000""").df()
+        data = con.sql("""select * from consoto_store limit 50000""").df()
         # data.to_csv(f"{cwd}\\query.csv", index=False)
 
     return data
