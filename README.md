@@ -1,5 +1,7 @@
 # Consoto Sales' Analysis
 
+![Header](img/header-image1.png)
+
 In this project, I analysed the sales, profits and refund records of Microsoft's Consoto Dataset, comprising of transaction records from branches of the organization across three continents (Asia, Europe, and Nort America), with a total of 306 stores covering 4 channels (Online, store, catalog, and reseller) with three years of data (2014 to 2016), making a total of 2.28 million transactions.
 
 I developed a dynamic dashboard using `Streamlit` and `Plotly` python libraries to help business managers monitor transactions on the fly, [click here]() to view the dashboard. The analysis was aimed at providing insights to help top excutives make better data driven business decisions for organizational growth.
