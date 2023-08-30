@@ -59,5 +59,10 @@ css = f"""
         header{{
             display: none !important;
         }}
+        @media only screen and (max-width: 550px) {{
+            g[clip-path='url(#legendc8a499)']{{
+                display: none !important;
+            }}
+        }}
     </style>
 """
