@@ -1,7 +1,7 @@
 import streamlit as sl
 
-# import pandas as pd
-import duckdb as db
+import pandas as pd
+import sqlite3 as db
 
 # ====================Connect to the MySQL Database============
 # contosodb = cn.connect(
@@ -11,10 +11,19 @@ import duckdb as db
 # data = pd.read_sql_query("select * from factsale limit 200000", contosodb)
 
 # ========= Fetch data from the database ===============
+# @sl.cache_data
+# def fetch_data():
+#     with db.connect("consoto.sqlite") as con:
+#         data = con.sql("""select * from consoto_store limit 50000""").df()
+#         # data.to_csv(f"{cwd}\\query.csv", index=False)
+
+#     return data
+
+
 @sl.cache_data
 def fetch_data():
-    with db.connect("consoto.db") as con:
-        data = con.sql("""select * from consoto_store limit 50000""").df()
+    with db.connect("consoto.sqlite") as con:
+        data = pd.read_sql_query("select * from consoto_store limit 50000", con)
         # data.to_csv(f"{cwd}\\query.csv", index=False)
 
     return data
@@ -23,6 +32,7 @@ def fetch_data():
 data = fetch_data()
 
 # create new date metadata columns
+data["DateKey"] = pd.to_datetime(data["DateKey"])
 data["Year"] = data["DateKey"].dt.year
 data["Month"] = data["DateKey"].dt.month_name()
 data["Month_Number"] = data["DateKey"].dt.month

@@ -108,3 +108,20 @@ WHERE
     ProfitAmount IS NULL;
 
 -- Exploratory Data Analysis (Question based)
+-- Calculate gross and net revenue
+SELECT
+    SUM(SaleAmount) as "Gross Revenue",
+    (SUM(SaleAmount) - SUM(ReturnAmount)) as "Net Revenue"
+FROM
+    consoto_store;
+
+-- Which days that typically have the highest number of transactions.
+SELECT
+    Day_Name AS Days,
+    COUNT(SalesKey) AS Transactions
+FROM
+    consoto_store
+GROUP BY
+    Day_Name
+ORDER BY
+    2 DESC;
