@@ -32,7 +32,7 @@ from components.db import data
 # from components.css import css
 
 # go to webfx.com/tools/emoji-cheat-sheet/ for emoji's
-with open('./components/style.css') as f:
+with open('style.css') as f:
     css = f.read()
 
 # ========= CSS ===============
