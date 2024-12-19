@@ -29,12 +29,14 @@ sl.set_page_config(page_title="Sales Dashboard", page_icon=":bar_chart:", layout
 from components.db import data
 
 # from pathlib import Path
-from components.css import css
+# from components.css import css
 
 # go to webfx.com/tools/emoji-cheat-sheet/ for emoji's
+with open('./components/style.css') as f:
+    css = f.read()
 
 # ========= CSS ===============
-sl.markdown(css, unsafe_allow_html=True)
+sl.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 sl.header("Consoto Sale's Analysis :bar_chart:")
 with sl.sidebar:
