@@ -1,47 +1,24 @@
 import streamlit as sl
-
 import pandas as pd
-import sqlite3 as db
 
-# ====================Connect to the MySQL Database============
-# contosodb = cn.connect(
-#     host="localhost", user="root", password="ekedie", database="contoso_store"
-# )
-
-# data = pd.read_sql_query("select * from factsale limit 200000", contosodb)
-
-# ========= Fetch data from the database ===============
-# @sl.cache_data
-# def fetch_data():
-#     with db.connect("consoto.sqlite") as con:
-#         data = con.sql("""select * from consoto_store limit 50000""").df()
-#         # data.to_csv(f"{cwd}\\query.csv", index=False)
-
-#     return data
-
-
+# ========= Fetch data from CSV instead of SQLite ===============
 @sl.cache_data
 def fetch_data():
-    with db.connect("consoto.sqlite") as con:
-        data = pd.read_sql_query("select * from consoto_store limit 50000", con)
-        # data.to_csv(f"{cwd}\\query.csv", index=False)
-
+    data = pd.read_csv("WineDataset.csv")  # 读取 CSV 文件
     return data
 
-
+# 读取数据
 data = fetch_data()
 
-# create new date metadata columns
-data["DateKey"] = pd.to_datetime(data["DateKey"])
-data["Year"] = data["DateKey"].dt.year
-data["Month"] = data["DateKey"].dt.month_name()
-data["Month_Number"] = data["DateKey"].dt.month
-data["Day_Name"] = data["DateKey"].dt.day_name()
-data["Day_Number"] = data["DateKey"].dt.day_name()
+# =========== 处理日期数据 ===========
+# 如果 CSV 里有 "DateKey" 列，就进行日期处理
+if "DateKey" in data.columns:
+    data["DateKey"] = pd.to_datetime(data["DateKey"])  # 转换为日期格式
+    data["Year"] = data["DateKey"].dt.year  # 提取年份
+    data["Month"] = data["DateKey"].dt.month_name()  # 提取月份（英文）
+    data["Month_Number"] = data["DateKey"].dt.month  # 提取月份（数字）
+    data["Day_Name"] = data["DateKey"].dt.day_name()  # 提取星期几
+    data["Day_Number"] = data["DateKey"].dt.day  # 提取日期（数字）
 
-# create day number column.
-data["Day_Number"].replace(
-    ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    [1, 2, 3, 4, 5, 6, 7],
-    inplace=True,
-)
+# 显示数据（可选）
+sl.write(data.head())  # 在 Streamlit 界面显示前 5 行数据
